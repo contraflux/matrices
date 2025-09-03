@@ -29,45 +29,46 @@ const eigvec_1_output = document.getElementById('eigenvector-1');
 const eigvec_2_output = document.getElementById('eigenvector-2');
 
 function drawGrid(v1, v2, color, width) {
-    const upperLeftBound = pixelsToCoords(0, 0);
-    const lowerRightBound = pixelsToCoords(canvas.width, canvas.height);
+    const lowerLeftBound = pixelsToCoords(0, canvas.height);
+    const upperRightBound = pixelsToCoords(canvas.width, 0);
 
     const gridSpacing = Math.pow(5, Math.ceil(log(50 / gridContainer.coordScale, 5)));
 
-    const [x_max, y_min] = lowerRightBound;
-    const [x_min, y_max] = upperLeftBound;
+    const [x_min, y_min] = lowerLeftBound;
+    const [x_max, y_max] = upperRightBound;
 
     const M = new Matrix(v1.x, v2.x, v1.y, v2.y);
-    const m1 = new Vector(Math.floor(x_max / gridSpacing) * gridSpacing, Math.floor(y_min / gridSpacing) * gridSpacing);
-    const m2 = new Vector(Math.floor(x_min / gridSpacing) * gridSpacing, Math.floor(y_max / gridSpacing) * gridSpacing);
+    const b1 = new Vector(x_min, y_min);
+    const b2 = new Vector(x_min, y_max);
+    const b3 = new Vector(x_max, y_min);
+    const b4 = new Vector(x_max, y_max);
 
     const M_inv = M.getInverse();
-    const w1 = M_inv.multiply(m1);
-    const w2 = M_inv.multiply(m2);
+    const w1 = M_inv.multiply(b1);
+    const w2 = M_inv.multiply(b2);
+    const w3 = M_inv.multiply(b3);
+    const w4 = M_inv.multiply(b4);
 
     ctx.strokeStyle = color;
     ctx.lineWidth = width;
     ctx.font = "18px serif";
 
-    const x_min_bound = Math.floor(Math.min(w1.x, w2.x) / gridSpacing) * gridSpacing;
-    const x_max_bound = Math.max(w1.x, w2.x);
-    const y_min_bound = Math.floor(Math.min(w1.y, w2.y) / gridSpacing) * gridSpacing;
-    const y_max_bound = Math.max(w1.y, w2.y);
+    const xs = [w1.x, w2.x, w3.x, w4.x];
+    const ys = [w1.y, w2.y, w3.y, w4.y];
 
-    for (let x = x_min_bound - gridSpacing; x <= x_max_bound; x += gridSpacing) {
-        for (let y = y_min_bound - gridSpacing; y <= y_max_bound; y += gridSpacing) {
-            const u = new Vector(x, y);
-            const v = M.multiply(u);
-            
+    for (let x = Math.floor(Math.min(...xs) / gridSpacing) * gridSpacing; x <= Math.max(...xs); x += gridSpacing) {
+        for (let y = Math.floor(Math.min(...ys) / gridSpacing) * gridSpacing; y <= Math.max(...ys); y += gridSpacing) {
+            const position = M.multiply(new Vector(x, y));
+
             ctx.save();
-            ctx.translate(...coordsToPixels(v.x, v.y))
+            ctx.translate(...coordsToPixels(position.x, position.y));
             ctx.beginPath();
             ctx.moveTo(0, 0);
-            ctx.lineTo(v1.x * gridContainer.coordScale * gridSpacing, -v1.y * gridContainer.coordScale * gridSpacing);
+            ctx.lineTo(v1.x * gridContainer.coordScale * gridSpacing, -v1.y * gridContainer.coordScale * gridSpacing)
             ctx.stroke();
             ctx.beginPath();
             ctx.moveTo(0, 0);
-            ctx.lineTo(v2.x * gridContainer.coordScale * gridSpacing, -v2.y * gridContainer.coordScale * gridSpacing);
+            ctx.lineTo(v2.x * gridContainer.coordScale * gridSpacing, -v2.y * gridContainer.coordScale * gridSpacing)
             ctx.stroke();
 
             if (x == 0) {
