@@ -5,9 +5,7 @@ import { Vector } from "../components/Vector.js";
 
 import { pixelsToCoords, coordsToPixels, hexToRGB } from "../util/conversions.js";
 import { log, colorLerp } from "../util/utilities.js";
-import { linRange, range } from "../util/arrays.js";
 import { rainbow, highlight, light, dark } from "../util/colors.js";
-import { divergence, curl } from "../util/vector_calc.js"
 
 export const gridContainer = new GridContainer('canvas');
 export const dt = 1e-2;
