@@ -136,14 +136,13 @@ body {
 .property-row {
     box-sizing: border-box;
     position: relative;
-    margin-top: 10px;
+    top: 0;
+    margin-top: 20px;
     margin-left: 10px;
     margin-right: 10px;
     border-style: solid;
     border-color: var(--light);
     border-width: 0px;
-    border-left-width: 1px;
-    border-top-width: 1px;
     padding-bottom: 10px;
 }
 
@@ -152,6 +151,15 @@ body {
     margin: 0;
     margin-top: 10px;
     margin-left: 10px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.property-row>p {
+    height: 16px;
+    margin: 0;
+    margin-top: 10px;
+    margin-left: 20px;
     padding: 0;
     font-size: 16px;
 }

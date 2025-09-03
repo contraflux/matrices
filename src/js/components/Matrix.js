@@ -64,29 +64,29 @@ export class Matrix {
         const a21 = this.a21;
         const a22 = this.a22 - eigenvalue;
 
-        let x1 = 0;
-        let x2 = 0;
+        let x = 0;
+        let y = 0;
 
         if (a11 != 0 || a12 != 0) {
             if (a12 != 0) {
-                x1 = 1;
-                x2 = -(a11 / a12);
+                x = 1;
+                y = -(a11 / a12);
             } else {
-                x2 = 1;
+                y = 1;
             }
         } else if (a21 != 0 || a22 != 0) {
             if (a22 != 0) {
-                x1 = 1;
-                x2 = -(a21 / a22);
+                x = 1;
+                y = -(a21 / a22);
             } else {
-                x2 = 1;
+                y = 1;
             }
         } else {
-            x1 = 1;
-            x2 = 1;
+            x = 1;
+            y = 1;
         }
 
-        return [x1, x2];
+        return new Vector(x, y);
     }
 
     transpose() {

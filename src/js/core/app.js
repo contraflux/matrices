@@ -72,9 +72,9 @@ function drawGrid(v1, v2, color, width) {
             ctx.stroke();
 
             if (x == 0) {
-                ctx.fillText(y, 10, 10);
+                ctx.fillText(y.toFixed(1), 10, 10);
             } else if (y == 0) {
-                ctx.fillText(x, 10, 10);
+                ctx.fillText(x.toFixed(1), 10, 10);
             }
 
             ctx.restore();
@@ -82,7 +82,7 @@ function drawGrid(v1, v2, color, width) {
     }
 }
 
-function drawVector(v, color, width) {
+function drawVector(v, color, width, drawArrow) {
     const [w_0, h_0] = coordsToPixels(0, 0);
     const [w, h] = coordsToPixels(...v.asArray());
     
@@ -95,6 +95,17 @@ function drawVector(v, color, width) {
     ctx.lineTo(w, h);
     ctx.stroke();
     ctx.restore();
+
+    if (drawArrow) {
+        ctx.save();
+        ctx.translate(w, h);
+        ctx.rotate(Math.atan2(v.x, v.y) + Math.PI);
+        ctx.moveTo(-5, -5);
+        ctx.lineTo(0, 0);
+        ctx.lineTo(5, -5);
+        ctx.stroke();
+        ctx.restore();
+    }
 }
 
 function appPeriodic() {
@@ -103,7 +114,7 @@ function appPeriodic() {
     gridContainer.matrix.a21 = parseFloat(a21_input.value);
     gridContainer.matrix.a22 = parseFloat(a22_input.value);
 
-    updateProperties();
+    const [c1, u1, c2, u2] = updateProperties();
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = light;
@@ -117,13 +128,19 @@ function appPeriodic() {
     const v2 = gridContainer.matrix.multiply(e2);
 
     drawGrid(e1, e2, "white", 0.5);
-    drawGrid(v1, v2, "blue", 1);
+    drawGrid(v1, v2, "purple", 1);
 
-    drawVector(e1, "white", 2.5);
-    drawVector(e2, "white", 2.5);
+    drawVector(e1, "white", 2, true);
+    drawVector(e2, "white", 2, true);
 
-    drawVector(v1, "blue", 5);
-    drawVector(v2, "blue", 5);
+    drawVector(v1, "purple", 4, true);
+    drawVector(v2, "purple", 4, true);
+
+    drawVector(u1, "green", 3, true);
+    drawVector(u2, "green", 3, true);
+
+    drawVector(u1._scale(c1), "green", 2, true);
+    drawVector(u2._scale(c2), "green", 2, true);
 
 }
 
@@ -143,10 +160,12 @@ function updateProperties() {
     polynomial_output.innerHTML = gridContainer.matrix.characteristicPolynomial();
     eigval_1_output.innerHTML = eigval_1;
     eigval_2_output.innerHTML = eigval_2;
-    const [x1, x2] = gridContainer.matrix.eigenvector(eigval_1);
-    const [y1, y2] = gridContainer.matrix.eigenvector(eigval_2);
-    eigvec_1_output.innerHTML = "[" + x1 + ", " + x2 + "]";
-    eigvec_2_output.innerHTML = "[" + y1 + ", " + y2 + "]";
+    const u1 = gridContainer.matrix.eigenvector(eigval_1);
+    const u2 = gridContainer.matrix.eigenvector(eigval_2);
+    eigvec_1_output.innerHTML = u1.asString();
+    eigvec_2_output.innerHTML = u2.asString();
+
+    return [eigval_1, u1, eigval_2, u2];
 }
 
 canvas.addEventListener('mousedown', (e) => { gridContainer.isDragging = true; });

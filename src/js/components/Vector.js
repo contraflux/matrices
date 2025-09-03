@@ -32,4 +32,8 @@ export class Vector {
     asArray() {
         return [this.x, this.y];
     }
+
+    asString() {
+        return "[" + this.x + ", " + this.y + "]";
+    }
 }
