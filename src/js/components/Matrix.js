@@ -21,6 +21,20 @@ export class Matrix {
         return new Vector(v1, v2);
     }
 
+    multiplyMatrix(M) {
+        const a11 = this.a11;
+        const a12 = this.a12;
+        const a21 = this.a21;
+        const a22 = this.a22;
+
+        const x11 = (a11 * M.a11) + (a12 * M.a21);
+        const x12 = (a11 * M.a12) + (a12 * M.a22);
+        const x21 = (a21 * M.a11) + (a22 * M.a21);
+        const x22 = (a21 * M.a12) + (a22 * M.a22);
+
+        return new Matrix(x11, x12, x21, x22);
+    }
+
     rank() {
         if (this.determinant() != 0) {
             return 2;
@@ -43,8 +57,8 @@ export class Matrix {
 
     characteristicPolynomial() {
         const b = this.trace() >= 0 ? " - " + this.trace() : " + " + (-1 * this.trace());
-        const c = this.determinant() >= 0 ? " + " + this.determinant() : " - " + (-1 * this.determinant);
-        return "(λ^2)" + b + "(λ)" + b;
+        const c = this.determinant() >= 0 ? " + " + this.determinant() : " - " + (-1 * this.determinant());
+        return "(λ^2)" + b + "(λ)" + c;
     }
 
     eigenvalues() {
@@ -122,5 +136,9 @@ export class Matrix {
         M.scale(1 / det);
 
         return M;
+    }
+
+    asString() {
+        return `[${this.a11} ${this.a12}; ${this.a21} ${this.a22}]`
     }
 }

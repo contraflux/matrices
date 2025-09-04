@@ -141,7 +141,6 @@ function appPeriodic() {
 
     drawVector(u1._scale(c1), "green", 2, true);
     drawVector(u2._scale(c2), "green", 2, true);
-
 }
 
 function updateValues() {
