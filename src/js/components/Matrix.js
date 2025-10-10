@@ -1,3 +1,14 @@
+/**
+ * Matrix
+ * 
+ * 2x2 Matrix definition and operations including scalar multiplication, vector
+ * multiplication, determinant, trace, and finding eigenvalues and
+ * eigenvectors
+ * 
+ * @author contraflux
+ * @date 10/10/2025
+ */
+
 import { Vector } from "./Vector.js";
 
 export class Matrix {

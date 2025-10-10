@@ -1,3 +1,12 @@
+/**
+ * Container
+ * 
+ * Classes for organizing content needed across scripts
+ * 
+ * @author contraflux
+ * @date 10/10/2025
+ */
+
 import { Matrix } from "./Matrix.js";
 
 class Container {

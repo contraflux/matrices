@@ -1,3 +1,13 @@
+/**
+ * Vector
+ * 
+ * R^2 Vector definition and operations including scalar multiplication, dot
+ * products, and magnitudes
+ * 
+ * @author contraflux
+ * @date 10/10/2025
+ */
+
 export class Vector {
     constructor(x = 0, y = 0) {
         this.x = x;

@@ -1,11 +1,18 @@
-import { GridContainer} from "../components/Container.js"
+/**
+ * app
+ * 
+ * Main script for the app, contains evaluation of user input, calling of draw
+ * functions for the scalar fields, vector fields, and charges, periodic function
+ * and event listeners
+ * 
+ * @author contraflux
+ * @date 10/10/2025
+ */
 
-import { Matrix } from "../components/Matrix.js";
-import { Vector } from "../components/Vector.js";
-
-import { pixelsToCoords, coordsToPixels, hexToRGB } from "../util/conversions.js";
-import { log, colorLerp } from "../util/utilities.js";
-import { rainbow, highlight, light, dark } from "../util/colors.js";
+import { GridContainer} from "./components/Container.js"
+import { Vector } from "./components/Vector.js";
+import { light } from "./util/utilities.js";
+import { drawGrid, drawVector } from "./util/plotting.js"
 
 export const gridContainer = new GridContainer('canvas');
 export const dt = 1e-2;
@@ -37,93 +44,6 @@ const eigval_2_output = document.getElementById('eigenvalue-2');
 const eigvec_1_output = document.getElementById('eigenvector-1');
 const eigvec_2_output = document.getElementById('eigenvector-2');
 
-function drawGrid(v1, v2, color, width) {
-    const lowerLeftBound = pixelsToCoords(0, canvas.height);
-    const upperRightBound = pixelsToCoords(canvas.width, 0);
-
-    const threshold = 5
-    const gridSpacing = Math.pow(threshold, Math.ceil(log(50 / gridContainer.coordScale, threshold)));
-
-    const [x_min, y_min] = lowerLeftBound;
-    const [x_max, y_max] = upperRightBound;
-
-    const M = new Matrix(v1.x, v2.x, v1.y, v2.y);
-    const b1 = new Vector(x_min, y_min);
-    const b2 = new Vector(x_min, y_max);
-    const b3 = new Vector(x_max, y_min);
-    const b4 = new Vector(x_max, y_max);
-
-    const M_inv = M.getInverse();
-    const w1 = M_inv.multiply(b1);
-    const w2 = M_inv.multiply(b2);
-    const w3 = M_inv.multiply(b3);
-    const w4 = M_inv.multiply(b4);
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.font = "18px serif";
-
-    const xs = [w1.x, w2.x, w3.x, w4.x];
-    const ys = [w1.y, w2.y, w3.y, w4.y];
-
-    for (let x = Math.floor(Math.min(...xs) / gridSpacing) * gridSpacing; x <= Math.max(...xs); x += gridSpacing) {
-        for (let y = Math.floor(Math.min(...ys) / gridSpacing) * gridSpacing; y <= Math.max(...ys); y += gridSpacing) {
-            const position = M.multiply(new Vector(x, y));
-
-            ctx.save();
-            ctx.translate(...coordsToPixels(position.x, position.y));
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(v1.x * gridContainer.coordScale * gridSpacing, -v1.y * gridContainer.coordScale * gridSpacing)
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(0, 0);
-            ctx.lineTo(v2.x * gridContainer.coordScale * gridSpacing, -v2.y * gridContainer.coordScale * gridSpacing)
-            ctx.stroke();
-
-            if (x == 0) {
-                ctx.fillText(y.toFixed(0), 5, 20);
-                ctx.beginPath();
-                ctx.arc(0, 0, 3, 0, Math.PI * 2)
-                ctx.fill();
-            } else if (y == 0) {
-                ctx.fillText(x.toFixed(0), 5, 20);
-                ctx.beginPath();
-                ctx.arc(0, 0, 3, 0, Math.PI * 2)
-                ctx.fill();
-            }
-
-            ctx.restore();
-        }
-    }
-}
-
-function drawVector(v, color, width, drawArrow) {
-    const [w_0, h_0] = coordsToPixels(0, 0);
-    const [w, h] = coordsToPixels(...v.asArray());
-    
-    ctx.strokeStyle = color;
-    ctx.lineWidth = width;
-    ctx.font = "18px serif";
-    ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(w_0, h_0);
-    ctx.lineTo(w, h);
-    ctx.stroke();
-    ctx.restore();
-
-    if (drawArrow) {
-        ctx.save();
-        ctx.translate(w, h);
-        ctx.rotate(Math.atan2(v.x, v.y) + Math.PI);
-        ctx.moveTo(-5, -5);
-        ctx.lineTo(0, 0);
-        ctx.lineTo(5, -5);
-        ctx.stroke();
-        ctx.restore();
-    }
-}
-
 function appPeriodic() {
     gridContainer.matrix.a11 = parseFloat(a11_input.value);
     gridContainer.matrix.a12 = parseFloat(a12_input.value);
@@ -154,23 +74,23 @@ function appPeriodic() {
     const ebar_1 = gridContainer.matrix.multiply(e1);
     const ebar_2 = gridContainer.matrix.multiply(e2);
 
-    drawGrid(e1, e2, "white", 0.5);
-    drawGrid(ebar_1, ebar_2, "#7c98ff", 1);
+    drawGrid(gridContainer, e1, e2, "white", 0.5);
+    drawGrid(gridContainer, ebar_1, ebar_2, "#7c98ff", 1);
 
-    drawVector(e1, "white", 2, true);
-    drawVector(e2, "white", 2, true);
+    drawVector(gridContainer, e1, "white", 2, true);
+    drawVector(gridContainer, e2, "white", 2, true);
 
-    drawVector(ebar_1, "#7c98ff", 4, true);
-    drawVector(ebar_2, "#7c98ff", 4, true);
+    drawVector(gridContainer, ebar_1, "#7c98ff", 4, true);
+    drawVector(gridContainer, ebar_2, "#7c98ff", 4, true);
 
-    drawVector(u1, "#7cff98", 3, true);
-    drawVector(u2, "#7cff98", 3, true);
+    drawVector(gridContainer, u1, "#7cff98", 3, true);
+    drawVector(gridContainer, u2, "#7cff98", 3, true);
 
-    drawVector(u1._scale(c1), "#7cff98", 1, true);
-    drawVector(u2._scale(c2), "#7cff98", 1, true);
+    drawVector(gridContainer, u1._scale(c1), "#7cff98", 1, true);
+    drawVector(gridContainer, u2._scale(c2), "#7cff98", 1, true);
 
-    drawVector(v, "#ff987c", 3, true);
-    drawVector(vbar, "#ff987c", 1, true);
+    drawVector(gridContainer, v, "#ff987c", 3, true);
+    drawVector(gridContainer, vbar, "#ff987c", 1, true);
 }
 
 function updateValues() {
@@ -206,6 +126,7 @@ invert_input.addEventListener('click', () => {
     gridContainer.matrix.invert();
     updateValues();
 });
+
 transpose_input.addEventListener('click', () => {
     gridContainer.matrix.transpose();
     updateValues();
