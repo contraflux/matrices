@@ -76,14 +76,13 @@ body {
 }
 
 .matrix-input>input {
-    background-color: var(--shadow);
+    background-color: var(--panel);
     margin-bottom: 10px;
     width: 50px; height: 30px;
     box-sizing: border-box;
-    border-width: 1px;
-    border-style: solid;
+    border-width: 0px;
+    border-bottom: 2px solid var(--light);
     border-radius: 5px;
-    border-color: var(--light);
     text-align: center;
     color: var(--light);
     font-size: 16px;
@@ -216,7 +215,7 @@ body {
     width: 80px;
     margin-left: 10px;
     color: var(--light);
-    background-color: var(--shadow);
+    background-color: var(--panel);
     box-sizing: border-box;
     border-style: solid;
     border-color: var(--light);
@@ -225,7 +224,7 @@ body {
 }
 
 .action-button:hover {
-    background-color: var(--background);
+    background-color: var(--shadow);
     box-shadow: 0 5px 10px black;
 }
 

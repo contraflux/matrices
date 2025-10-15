@@ -15,7 +15,6 @@ import { light } from "./util/utilities.js";
 import { drawGrid, drawVector } from "./util/plotting.js"
 
 export const gridContainer = new GridContainer('canvas');
-export const dt = 1e-2;
 
 const canvas = gridContainer.canvas;
 const ctx = gridContainer.ctx;
