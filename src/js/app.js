@@ -12,7 +12,7 @@
 import { GridContainer} from "./components/Container.js"
 import { Vector } from "./components/Vector.js";
 import { light } from "./util/utilities.js";
-import { drawGrid, drawVector } from "./util/plotting.js"
+import { drawGrid, drawVector, drawArea } from "./util/plotting.js"
 
 export const gridContainer = new GridContainer('canvas');
 
@@ -90,6 +90,8 @@ function appPeriodic() {
 
     drawVector(gridContainer, v, "#ff987c", 3, true);
     drawVector(gridContainer, vbar, "#ff987c", 1, true);
+
+    drawArea(gridContainer, ebar_1, ebar_2, "#7c98ff", 0.25);
 }
 
 function updateValues() {

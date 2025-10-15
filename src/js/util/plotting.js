@@ -118,3 +118,36 @@ export function drawVector(gridContainer, v, color, width, drawArrow) {
         ctx.restore();
     }
 }
+
+/**
+ * Shades in the area swept out by two vectors
+ *
+ * @param {GridContainer} gridContainer - The app container
+ * @param {Vector} v1 - The first vector
+ * @param {Vector} v2 - The second vector
+ * @param {string} color - The color of the polygon
+ * @param {float} alpha - The transparency of the polygon
+ */
+export function drawArea(gridContainer, v1, v2, color, alpha) {
+    const ctx = gridContainer.ctx;
+
+    const p1 = coordsToPixels(0, 0);
+    const p2 = coordsToPixels(v1.x, v1.y);
+    const p3 = coordsToPixels(v1.x + v2.x, v1.y + v2.y);
+    const p4 = coordsToPixels(v2.x, v2.y);
+
+    ctx.globalAlpha = 0.5;
+
+    ctx.fillStyle = color;
+    ctx.font = "18px serif";
+    ctx.save();
+    ctx.beginPath();
+    ctx.moveTo(p1[0], p1[1]);
+    ctx.lineTo(p2[0], p2[1]);
+    ctx.lineTo(p3[0], p3[1]);
+    ctx.lineTo(p4[0], p4[1]);
+    ctx.fill();
+    ctx.restore();
+    
+    ctx.globalAlpha = 1;
+}
